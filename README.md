@@ -39,10 +39,3 @@ Since this is an Angular-powered form, we use the ngSubmit directive to trigger 
 })
 ```
 The first thing to notice is the absence of any real logic. This was done deliberately so to decouple the form from the actual authentication logic. It’s usually a good idea to abstract away as much logic as possible from your controllers, by putting that stuff in services. `AngularJS controllers should only manage the $scope object (by watching and manipulating) and not do any heavy lifting.`
-
-
-
-
-This tutorial focuses on using OAuth to implement Sign-In through the following providers: Facebook, Google+, LinkedIn, and Twitter. These providers use either OAuth1.0a (LinkedIn, Twitter) or OAuth2.0 (Facebook, Google+).
-
-To use OAuth, you first have to register an application with that provider. The application will be assigned credentials, needed when performing the OAuth flow.
