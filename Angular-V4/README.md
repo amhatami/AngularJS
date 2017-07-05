@@ -21,51 +21,62 @@ You need to set up your development environment before you can do anything.
 
 Install Node.js® and npm if they are not already on your machine.
 
-      Verify that you are running at least node 6.9.x and npm 3.x.x by running node -v and npm -v in a terminal/console window. Older versions produce errors, but newer versions are fine.
+      Verify that you are running at least node 6.9.x and npm 3.x.x by running 
+      node -v and npm -v in a terminal/console window. Older versions produce 
+      errors, but newer versions are fine.
       
 Then install the Angular CLI globally.
 ```cmd
 npm install -g @angular/cli
 ```
 
+## Step 2. Create a new project
 
-Angular applications are made up of components. A component is the combination of an HTML template and a component class that controls a portion of the screen. Here is an example of a component that displays a simple string:
-Step 1. Set up the Development Environment
-**src/app/app.component.ts**
-```TYPESCRIPT
-import { Component } from '@angular/core';
+Open a terminal window.
 
-@Component({
-  selector: 'my-app',
-  template: `<h1>Hello {{name}}</h1>`
-})
-export class AppComponent { name = 'Angular'; }
+Generate a new project and skeleton application by running the following commands:
 ```
-Every component begins with an @Component decorator function that takes a metadata object. The metadata object describes how the HTML template and component class work together.
+ng new my-app
+```
+      Patience please. It takes time to set up a new project, most of it spent installing npm packages.
 
-The selector property tells Angular to display the component inside a custom <my-app> tag in the index.html.
+## Step 3: Serve the application
 
-**index.html (inside <body>)**
-```html
-<my-app>Loading AppComponent content here ...</my-app>
-````
-The template property defines a message inside an ```<h1>``` header. The message starts with "Hello" and ends with `{{name}}`, which is an Angular interpolation binding expression. At runtime, Angular replaces `{{name}}` with the value of the component's `name` property. Interpolation binding is one of many Angular features you'll discover in this documentation.
+Go to the project directory and launch the server.
+```
+cd my-app
+ng serve --open
+```
 
-In the example, change the component class's `name` property from `'Angular'` to `'World'` and see what happens.
+The `ng serve` command launches the server, watches your files, and rebuilds the app as you make changes to those files.
 
-## A WORD ABOUT TYPESCRIPT
-This example is written in TypeScript, a superset of JavaScript. Angular uses TypeScript because its types make it easy to support developer productivity with tooling. You can also write Angular code in JavaScript; this guide explains how.
+Using the `--open` (or just `-o`) option will automatically open your browser on `http://localhost:4200/`.
 
-Also Topics include:
-*What is Angular?
-*Setting up an Angular template
-*Creating a component
-*Binding events and properties
-*Getting data to components
-*Using directives and pipes
-*Creating Angular forms
-*Validating form data
-*Understanding dependency injection
-*Providing services
-*Making HTTP calls
-*Routing
+Your app greets you with a message:
+![angular logo](https://angular.io/generated/images/guide/cli-quickstart/app-works.png)
+
+## Step 4: Edit your first Angular component
+The CLI created the first Angular component for you. This is the root component and it is named `app-root`. You can find it in `./src/app/app.component.ts`.
+
+Open the component file and change the `title` property from Welcome to app!! to Welcome to My First Angular App!!:
+
+**src/app/app.component.ts**
+```ts
+export class AppComponent {
+  title = 'My First Angular App';
+}
+```
+The browser reloads automatically with the revised title. That's nice, but it could look better.
+
+Open `src/app/app.component.css` and give the component some style.
+
+**src/app/app.component.css**
+```css
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
+}
+```
+![app output](https://angular.io/generated/images/guide/cli-quickstart/my-first-app.png)
+Looking good!
