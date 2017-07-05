@@ -10,3 +10,5 @@ Angular-V2
 Angular-V4
 ```
       (Note: there are ongoing subversion for V4)
+
+![angular](https://angular.io/assets/images/logos/angular/angular.svg)
