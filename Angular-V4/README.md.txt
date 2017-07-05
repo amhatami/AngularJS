@@ -1,200 +1,71 @@
-# angularjs-login (Angular 1.6)
-Techniques for authentication in AngularJS applications , A collection of ideas for authentication & access control
+# Angular 4
+Angular 4 is here for some time. It is a good time to enhance your skills on angular 4. I find myself more powerful while using angular 4. You should know that there are not many differences between angular 2 and angular 4. So anything I will discuss here would work with angular 2. You probably know the angular team is aiming to call angular 4 or angular 2 is as just Angular. Let’s get started by knowing what we are going to build now. I will try to be as detailed as possible.
 
-## Authentication
-The most common form of authentication is logging in with a username (or email address) and password. This means implementing a login form where users can enter their credentials. Such a form could look like this:
+## TYPESCRIPT
+TypeScript starts from the same syntax and semantics that millions of JavaScript developers know today. Use existing JavaScript code, incorporate popular JavaScript libraries, and call TypeScript code from JavaScript.
 
-```HTML
-<form name="loginForm" ng-controller="LoginController"
-      ng-submit="login(credentials)" novalidate>
-  <label for="username">Username:</label>
-  <input type="text" id="username"
-         ng-model="credentials.username">
-  <label for="password">Password:</label>
-  <input type="password" id="password"
-         ng-model="credentials.password">
-  <button type="submit">Login</button>
-</form>
+TypeScript compiles to clean, simple JavaScript code which runs on any browser, in Node.js, or in any JavaScript engine that supports 
+
+## let Start
+
+Good tools make application development quicker and easier to maintain than if you did everything by hand.
+
+The Angular CLI is a command line interface tool that can create a project, add files, and perform a variety of ongoing development tasks such as testing, bundling, and deployment.
+
+The goal in this guide is to build and run a simple Angular application in TypeScript, using the Angular CLI while adhering to the Style Guide recommendations that benefit every Angular project.
+
+By the end of the chapter, you'll have a basic understanding of development with the CLI and a foundation for both these documentation samples and for real world applications.
+
+## Step 1. Set up the Development Environment
+You need to set up your development environment before you can do anything.
+
+Install Node.js® and npm if they are not already on your machine.
+
+      Verify that you are running at least node 6.9.x and npm 3.x.x by running node -v and npm -v in a terminal/console window. Older versions produce errors, but newer versions are fine.
+      
+Then install the Angular CLI globally.
+```cmd
+npm install -g @angular/cli
 ```
-(Note: there’s an extended version below, this is just a simple example)
 
-Since this is an Angular-powered form, we use the ngSubmit directive to trigger a scope function on submit. Note that we’re passing the credentials as an argument rather than relying on $scope.credentials, this makes the function easier to unit-test and avoids coupling between the function and it’s surrounding scope. The corresponding controller could look like this:
 
-```Javascript
-.controller('LoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
-  $scope.credentials = {
-    username: '',
-    password: ''
-  };
-  $scope.login = function (credentials) {
-    AuthService.login(credentials).then(function (user) {
-      $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-      $scope.setCurrentUser(user);
-    }, function () {
-      $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-    });
-  };
+Angular applications are made up of components. A component is the combination of an HTML template and a component class that controls a portion of the screen. Here is an example of a component that displays a simple string:
+Step 1. Set up the Development Environment
+**src/app/app.component.ts**
+```TYPESCRIPT
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'my-app',
+  template: `<h1>Hello {{name}}</h1>`
 })
+export class AppComponent { name = 'Angular'; }
 ```
-The first thing to notice is the absence of any real logic. This was done deliberately so to decouple the form from the actual authentication logic. It’s usually a good idea to abstract away as much logic as possible from your controllers, by putting that stuff in services. `AngularJS controllers should only manage the $scope object (by watching and manipulating) and not do any heavy lifting.`
+Every component begins with an @Component decorator function that takes a metadata object. The metadata object describes how the HTML template and component class work together.
 
-## Communicating session changes
-Authenticating is one of those things that affect the state of the entire application. For this reason I prefer to use events (with $broadcast) to communicate changes in the user session. It’s a good practice to define all of the available event codes in a central place. I like to use constants for these things:
+The selector property tells Angular to display the component inside a custom <my-app> tag in the index.html.
 
-```javascript
-.constant('AUTH_EVENTS', {
-  loginSuccess: 'auth-login-success',
-  loginFailed: 'auth-login-failed',
-  logoutSuccess: 'auth-logout-success',
-  sessionTimeout: 'auth-session-timeout',
-  notAuthenticated: 'auth-not-authenticated',
-  notAuthorized: 'auth-not-authorized'
-})
-```
-A nice thing about constants is that they can be injected like services, which makes them easy to mock in your unit tests. It also allows you to easily rename them (change the values) later without having to change a bunch of files. The same trick is used for user roles:
-```javascript
-.constant('USER_ROLES', {
-  all: '*',
-  admin: 'admin',
-  editor: 'editor',
-  guest: 'guest'
-})
-```
-If you ever want to give all editors the same rights as administrators, you can simply change the value of editor to ‘admin’.
-
-## The AuthService
-The logic related to authentication and authorization (access control) is best grouped together in a service:
-```javascript
-.factory('AuthService', function ($http, Session) {
-  var authService = {};
- 
-  authService.login = function (credentials) {
-    return $http
-      .post('/login', credentials)
-      .then(function (res) {
-        Session.create(res.data.id, res.data.user.id,
-                       res.data.user.role);
-        return res.data.user;
-      });
-  };
- 
-  authService.isAuthenticated = function () {
-    return !!Session.userId;
-  };
- 
-  authService.isAuthorized = function (authorizedRoles) {
-    if (!angular.isArray(authorizedRoles)) {
-      authorizedRoles = [authorizedRoles];
-    }
-    return (authService.isAuthenticated() &&
-      authorizedRoles.indexOf(Session.userRole) !== -1);
-  };
- 
-  return authService;
-})
-```
-To further separate concerns regarding authentication, I like to use another service (a singleton object, using the service style) to keep the user’s session information. The specifics of this object depends on your back-end implementation, but I’ve included a generic example below.
-```javascript
-.service('Session', function () {
-  this.create = function (sessionId, userId, userRole) {
-    this.id = sessionId;
-    this.userId = userId;
-    this.userRole = userRole;
-  };
-  this.destroy = function () {
-    this.id = null;
-    this.userId = null;
-    this.userRole = null;
-  };
-})
-```
-Once a user is logged in, his information should probably be displayed somewhere (e.g. in the top-right corner). In order to do this, the user object must be referenced in the $scope object, preferably in a place that’s accessible to the entire application. While $rootScope would be an obvious first choice, I try to refrain from using $rootScope too much (actually I use it only for global event broadcasting). Instead my preference is to define a controller on the root node of the application, or at least somewhere high up in the DOM tree. The body tag is a good candidate:
+**index.html (inside <body>)**
 ```html
-<body ng-controller="ApplicationController">
-  ...
-</body>
-```
-The ApplicationController is a container for a lot of global application logic, and an alternative to Angular’s run function. Since it’s at the root of the $scope tree, all other scopes will inherit from it (except isolate scopes). It’s a good place to define the currentUser object:
-```javascript
-.controller('ApplicationController', function ($scope,
-                                               USER_ROLES,
-                                               AuthService) {
-  $scope.currentUser = null;
-  $scope.userRoles = USER_ROLES;
-  $scope.isAuthorized = AuthService.isAuthorized;
- 
-  $scope.setCurrentUser = function (user) {
-    $scope.currentUser = user;
-  };
-})
-```
-We’re not actually assigning the currentUser object, we’re merely initializing the property on the scope so the currentUser can later be accessed throughout the application. Unfortunately we can’t simply assign a new value to it from a child scope, because that would result in a shadow property. It’s a consequence of primitive types (strings, numbers, booleans, undefined and null) being passed by value instead of by reference. To circumvent shadowing, we have to use a setter function. For a lot more on Angular scope and prototypal inheritance, read Understanding Scopes.
-Besides initializing the currentUser property, I’ve also included some properties which allow easy access to USER_ROLES and the isAuthorized function. These should only be used in template expressions, not from other controllers, because doing so would complicate the controller’s testability. In the next chapter you’ll see how we use these properties.
+<my-app>Loading AppComponent content here ...</my-app>
+````
+The template property defines a message inside an ```<h1>``` header. The message starts with "Hello" and ends with `{{name}}`, which is an Angular interpolation binding expression. At runtime, Angular replaces `{{name}}` with the value of the component's `name` property. Interpolation binding is one of many Angular features you'll discover in this documentation.
 
-<hr align="center" width="50%">
-<hr align="center" width="60%">
+In the example, change the component class's `name` property from `'Angular'` to `'World'` and see what happens.
 
-# Access control
+## A WORD ABOUT TYPESCRIPT
+This example is written in TypeScript, a superset of JavaScript. Angular uses TypeScript because its types make it easy to support developer productivity with tooling. You can also write Angular code in JavaScript; this guide explains how.
 
-Authorization a.k.a. access control in AngularJS doesn’t really exist. Since we’re talking about a client-side application, all of the source code is in the client’s hands. There’s nothing preventing the user from tampering with that code to gain ‘access’ to certain views and interface elements. All we can really do is visibility control. If you need real authorization you’ll have to do it server-side, but that’s beyond the scope of this article.
-
-## Restricting element visibility
-
-AngularJS comes with several directives to show or hide an element based on some scope property or expression: ngShow, ngHide, ngIf and ngSwitch. The first two will use a style attribute to hide the element, while the last two will actually remove the element from the DOM.
-The first solution (hiding it) is best used only when the expression changes frequently and the element doesn’t contain a lot of template logic and scope references. The reason for this is that any template logic within a hidden element will still be reevaluated on each digest cycle, slowing down the application. The second solution will remove the DOM element entirely, including any event handlers and scope bindings. Changing the DOM is a lot of work for the browser (hence the reason for using ngShow/ngHide in some cases), but worth the effort most of the time. Since user access doesn’t change often, using ngIf or ngSwitch is the best choice:
-
-```html
-<div ng-if="currentUser">Welcome, {{ currentUser.name }}</div>
-<div ng-if="isAuthorized(userRoles.admin)">You're admin.</div>
-<div ng-switch on="currentUser.role">
-  <div ng-switch-when="userRoles.admin">You're admin.</div>
-  <div ng-switch-when="userRoles.editor">You're editor.</div>
-  <div ng-switch-default>You're something else.</div>
-</div>
-```
-The switch example assumes a user can have only one role. I’m sure you can come up with something more flexible, but you get the idea.
-
-## Restricting route access
-
-Most of the time you will want to disallow access to an entire page rather than hide a single element. Using a custom data object on the route (or state, when using UI Router), we can specify which roles should be allowed access. This example uses the UI Router style, but the same will work for ngRoute.
-
-```javascript
-.config(function ($stateProvider, USER_ROLES) {
-  $stateProvider.state('dashboard', {
-    url: '/dashboard',
-    templateUrl: 'dashboard/index.html',
-    data: {
-      authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
-    }
-  });
-})
-```
-
-Next, we need to check this property every time the route changes (i.e. the user navigates to another page). This involves listening to the $routeChangeStart (for ngRoute) or $stateChangeStart (for UI Router) event:
-
-```javascripts
-.run(function ($rootScope, AUTH_EVENTS, AuthService) {
-  $rootScope.$on('$stateChangeStart', function (event, next) {
-    var authorizedRoles = next.data.authorizedRoles;
-    if (!AuthService.isAuthorized(authorizedRoles)) {
-      event.preventDefault();
-      if (AuthService.isAuthenticated()) {
-        // user is not allowed
-        $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-      } else {
-        // user is not logged in
-        $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-      }
-    }
-  });
-})
-```
-
-When a user is not authorized to access the page (because he’s not logged in or doesn’t have the right role), the transition to the next page will be prevented, so the user will stay on the current page. Next, we broadcast an event which other modules can listen to. I suggest including a loginDialog directive on the page which appears when the notAuthenticated event is fired, and an error message which should appear when the notAuthorized event occurs.
-
-<hr align="center" width="50%">
-<hr align="center" width="60%">
-
-# Session expiration
-
-
+Also Topics include:
+*What is Angular?
+*Setting up an Angular template
+*Creating a component
+*Binding events and properties
+*Getting data to components
+*Using directives and pipes
+*Creating Angular forms
+*Validating form data
+*Understanding dependency injection
+*Providing services
+*Making HTTP calls
+*Routing
