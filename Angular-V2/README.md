@@ -23,10 +23,10 @@ The selector property tells Angular to display the component inside a custom <my
 **index.html (inside <body>)**
 ```html
 <my-app>Loading AppComponent content here ...</my-app>
-```
-The template property defines a message inside an <h1> header. The message starts with "Hello" and ends with {{name}}, which is an Angular interpolation binding expression. At runtime, Angular replaces {{name}} with the value of the component's name property. Interpolation binding is one of many Angular features you'll discover in this documentation.
+````
+The template property defines a message inside an ```<h1>``` header. The message starts with "Hello" and ends with `{{name}}`, which is an Angular interpolation binding expression. At runtime, Angular replaces `{{name}}` with the value of the component's `name` property. Interpolation binding is one of many Angular features you'll discover in this documentation.
 
-In the example, change the component class's name property from 'Angular' to 'World' and see what happens.
+In the example, change the component class's `name` property from `'Angular'` to `'World'` and see what happens.
 
 ## A WORD ABOUT TYPESCRIPT
 This example is written in TypeScript, a superset of JavaScript. Angular uses TypeScript because its types make it easy to support developer productivity with tooling. You can also write Angular code in JavaScript; this guide explains how.
