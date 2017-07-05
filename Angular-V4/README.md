@@ -55,6 +55,7 @@ Using the `--open` (or just `-o`) option will automatically open your browser on
 Your app greets you with a message:
 ![angular logo](https://angular.io/generated/images/guide/cli-quickstart/app-works.png)
 
+
 ## Step 4: Edit your first Angular component
 The CLI created the first Angular component for you. This is the root component and it is named `app-root`. You can find it in `./src/app/app.component.ts`.
 
@@ -79,4 +80,5 @@ h1 {
 }
 ```
 ![app output](https://angular.io/generated/images/guide/cli-quickstart/my-first-app.png)
+
 Looking good!
