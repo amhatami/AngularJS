@@ -1,5 +1,5 @@
 # Angular 2
-Techniques for authentication in AngularJS applications , A collection of ideas for authentication & access control
+AngularJS was designed by Google to address challenges programmers face building complex, single-page applications. This JavaScript framework takes care of the back end so you can take care of the client side. Angular 2 Essential Training introduces you to the essentials of this "superheroic" framework, including powerful features such as rich templates, change detection, user interactions, two-way data binding, comprehensive routing, and dependency injection.
 
 ## TYPESCRIPT
 A quick look at Angular basics.
@@ -30,3 +30,17 @@ In the example, change the component class's `name` property from `'Angular'` to
 
 ## A WORD ABOUT TYPESCRIPT
 This example is written in TypeScript, a superset of JavaScript. Angular uses TypeScript because its types make it easy to support developer productivity with tooling. You can also write Angular code in JavaScript; this guide explains how.
+
+Also Topics include:
+*What is Angular?
+*Setting up an Angular template
+*Creating a component
+*Binding events and properties
+*Getting data to components
+*Using directives and pipes
+*Creating Angular forms
+*Validating form data
+*Understanding dependency injection
+*Providing services
+*Making HTTP calls
+*Routing
